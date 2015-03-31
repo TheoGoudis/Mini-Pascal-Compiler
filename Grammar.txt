@@ -1,0 +1,72 @@
+MINI PASCAL GRAMMAR
+
+<PROGRAM>			::= "program" ID  <PROGRAMBLOCK>
+<PROGRAMBLOCK>		::= <DECLARATIONS>  <SUBPROGRAMS>  <BLOCK>
+<BLOCK>				::= "begin"  <SEQUENCE>  "end"
+<DECLARATIONS>		::= ( <CONSTDECL> )*  ( <VARDECL> )*
+<CONSTDECL>			::= "const"  <ASSIGNLIST>  ";"  |
+						ε					
+<ASSIGNLIST> 		::= ASSIGNCONST  ( , ASSIGNCONST )*
+<ASSIGNCONST> 		::= ID  ":="  CONSTANT
+<VARDECL> 			::= "var"  <VARLIST>  ";"  |
+						ε					
+<VARLIST> 			::= ID  ( , ID )*
+<SUBPROGRAMS> 		::= ( <PROCORFUNC> )*
+<PROCORFUNC>		::= "procedure"  ID  <PROCORFUNCBODY>  |
+						"function"  ID  <PROCORFUNCBODY>					
+<PROCORFUNCBODY>	::= <FORMALPARS>  <PROGRAMBLOCK>
+<FORMALPARS> 		::= "(" <FORMALPARLIST> | ε ")"
+<FORMALPARLIST> 	::= <FORMALPARITEM> ( , <FORMALPARITEM> )*
+<FORMALPARITEM> 	::= ID |
+						"var" ID					
+<SEQUENCE> 			::= <STATEMENT>  (  ";"  <STATEMENT> )*
+<BLOCK-OR-STAT> 	::= <BLOCK> |
+						<STATEMENT>					
+<STATEMENT>			::= <ASSIGNMENT-STAT>  |
+						<IF-STAT> |
+						<WHILE-STAT> |
+						<FOR-STAT> |
+						<CALL-STAT> |
+						<PRINT-STAT> |
+						<INPUT-STAT> |
+						<RETURN-STAT>|
+						<SELECT-STAT>						
+<ASSIGNMENT-STAT> 	::= ID  ":="  <EXPRESSION>
+<IF-STAT> 			::= "if"  <CONDITION>  "then"  <BLOCK-OR-STAT>  <ELSEPART>
+<ELSEPART>			::= ε  |
+						"else" <BLOCK-OR-STAT>
+<WHILE-STAT>		::= "while"  <CONDITION>  "do"  <BLOCK-OR-STAT>
+<FOR-STAT>			::= "for"  <ASSIGNMENT-STAT>  "to"  <EXPRESSION>  <STEP-PART>  <BLOCK-OR-STAT>
+<STEP-PART>			::= "step"  <EXPRESSION>  |
+						ε
+<CALL-STAT> 		::= "call"  ID  <ACTUALPARS>
+<PRINT-STAT> 		::= "print" "(" <EXPRESSION> ")"
+<INPUT-STAT> 		::= "input" "(" ID ")"
+<RETURN-STAT>		::= "return" "(" <EXPRESSION> ")"
+<SELECT-STAT>		::= "select" ID  <IS-EQUAL-PART> ( <IS-EQUAL-PART> )* "endselect"
+<IS-EQUAL-PART>		::= "is equal to" <EXPRESSION> ":" <BLOCK>
+<ACTUALPARS> 		::= "(" <ACTUALPARLIST> | ε  ")"
+<ACTUALPARLIST> 	::= <ACTUALPARITEM> ( , <ACTUALPARITEM> )*
+<ACTUALPARITEM> 	::= <EXPRESSION> |
+						"var" ID
+<CONDITION>			::= <BOOLTERM> ( "or" <BOOLTERM>)*
+<BOOLTERM>			::= <BOOLFACTOR> ( "and"  <BOOLFACTOR> )*
+<BOOLFACTOR>		::= "not" "[" <CONDITION> "]" |
+						"[" <CONDITION> "]" |
+						<EXPRESSION>  <RELATIONAL-OPER>  <EXPRESSION>
+<RELATIONAL-OPER>	::= "=" |
+						"<" |
+						">" |
+						">=" |
+						"<=" |
+						"<>"						
+<EXPRESSION>		:=  <OPTIONAL-SIGN>  <TERM>  ( <ADD-OPER> <TERM>)*
+<TERM>				::= <FACTOR> (<MUL-OPER> <FACTOR>)*
+<FACTOR>				::= CONSTANT |
+						"(" <EXPRESSION> ")"  |
+						ID  <OPTACTUALPARS>
+<OPTACTUALPARS>		::= <ACTUALPARS> |
+						ε					
+<ADD-OPER>			::= "+"  |  "-"
+<MUL-OPER>			::= "*"  |  "/"
+<OPTIONAL-SIGN>		::=  ε  |  <ADD-OPER>
